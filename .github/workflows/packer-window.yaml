@@ -1,46 +1,35 @@
-name: Build Packer Image
+name: Build Window Packer Image 
 
 on:
   push:
     branches:
-      - none  # Change this to your branch name if needed
+      - main  # Change this to your branch name if needed
+
+defaults:
+  run:
+    shell: pwsh
 
 jobs:
   packer:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 60
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      # - name: Set up environment variables
-      #   run: |
-      #     currentYear=$(date +'%Y')
-      #     currentMonth=$(date +'%m')
-      #     versionPrefix="$currentYear.$currentMonth"
-      #     versionPatch=$((counter++))
-      #     imageVersion="$versionPrefix.$versionPatch"
-      #     echo "imageVersion=$imageVersion" >> $GITHUB_ENV
 
       - name: BuildAgentIP
         id: BuildAgentIP
         run: |
-          # ipaddress=$(curl -s http://ipinfo.io/ip)
-          # echo "::set-output name=address::$ipaddress"
           $ipaddress = Invoke-RestMethod -Uri "http://ipinfo.io/ip"
           Write-Output "::set-output name=address::$ipaddress"
 
       - name: packer build
         run: |
-          # cd images/ubuntu/templates
-          # packer init ./ubuntu-minimal.pkr.hcl
-          # packer validate  ./ubuntu-minimal.pkr.hcl
-          # packer build ./ubuntu-minimal.pkr.hcl
           cd images/windows/templates
-          packer init ./windows-2019.pkr.hcl
-          packer validate ./windows-2019.pkr.hcl
-          packer build ./windows-2019.pkr.hcl
+          packer init ./windows-2022.pkr.hcl
+          packer validate ./windows-2022.pkr.hcl
+          packer build ./windows-2022.pkr.hcl
         env:
           # ARM_CLIENT_CERT_PATH: ${{ secrets.ARM_CLIENT_CERT_PATH }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}

@@ -1,18 +1,50 @@
+
 provider "azurerm" {
-  features {}
+    features {}
 }
 
-resource "azurerm_shared_image_gallery" "this" {
-  name                = "Windows-gallery-image"
-  resource_group_name = "shadab-rg"
-  location            = "East US"
-  description         = "Windows Gallery"
+# Create a resource group
+resource "azurerm_resource_group" "packer" {
+    name     = "ETN-ES-EAS-DEVSECOPS-PACKER"
+    location = "East US"
 }
 
-resource "azurerm_gallery_image" "this" {
-  name                = "packer-ubuntu22-dev"
-  resource_group_name = "shadab-rg"
-  gallery_name        = azurerm_gallery.this.name
-  location            = "East US"
-  description         = "Windows Image"
+# Create a VM image gallery
+resource "azurerm_image_gallery" "gallery" {
+    name                = "packer_gallery"
+    resource_group_name = azurerm_resource_group.packer.name
+    location            = azurerm_resource_group.packer.location
+    description         = "Gallery of Packer images"
+}
+
+# Create a VM image definitions
+resource "azurerm_shared_image" "windows-2022" {
+    # confidential_vm_enabled = ""
+    # accelerated_network_support_enabled = ""
+    # architecture = ""
+    # confidential_vm_supported = ""
+    # disk_types_not_allowed = ""
+    # eula = ""
+    # max_recommended_memory_in_gb = ""
+    # specialized = ""
+    # max_recommended_vcpu_count = ""
+    # min_recommended_vcpu_count = ""
+    # min_recommended_memory_in_gb = ""
+    # privacy_statement_uri = ""
+    # trusted_launch_supported = ""
+    # trusted_launch_enabled = ""
+    # end_of_life_date = ""
+    # id = ""
+    # provider = try(azurerm,null)
+    name                = "WindowsTest1"
+    resource_group_name = azurerm_resource_group.packer.name
+    location            = azurerm_resource_group.packer.location
+    gallery_name        = azurerm_image_gallery.gallery.name
+    description         = "VM image definition"
+    os_type             = "Windows"
+    os_state            = "Generalized"
+    publisher           = "MicrosoftWindowsServer"
+    offer               = "WindowsServer"
+    sku                 = "2022-Datacenter"
+    hyper_v_generation  = "v1"
 }
