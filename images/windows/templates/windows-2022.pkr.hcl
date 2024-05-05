@@ -49,7 +49,7 @@ variable "client_secret" {
 
 variable "helper_script_folder" {
   type    = string
-  default = "C:\\Program Files\\WindowsPowerShell\\Modules\"
+  default = "C:\\Program Files\\WindowsPowerShell\\Modules\""
 }
 
 variable "image_folder" {
@@ -194,7 +194,7 @@ build {
   }
 
   provisioner "file" {
-    destination = "${var.image_folder}\\"
+    destination = "${var.image_folder}\\""
     sources     = [
       "${path.root}/../assets",
       "${path.root}/../scripts",
@@ -203,8 +203,7 @@ build {
   }
 
   provisioner "file" {
-    destination = "${var.image_folder}\\scripts\\docs-gen\\"
+    destination = "${var.image_folder}\\scripts\\docs-gen\\""
     source      = "${path.root}/../../../helpers/software-report-base"
   }
-
 }
