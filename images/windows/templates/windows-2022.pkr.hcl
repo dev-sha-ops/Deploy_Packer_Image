@@ -44,12 +44,12 @@ variable "client_id" {
 variable "client_secret" {
   type      = string
   default   = "${env("ARM_CLIENT_SECRET")}"
-  sensitive = true
+  # sensitive = true
 }
 
 variable "helper_script_folder" {
   type    = string
-  default = "C:\\Program Files\\WindowsPowerShell\\Modules\\"
+  default = "C:\\Program Files\\WindowsPowerShell\\Modules\""
 }
 
 variable "image_folder" {
@@ -75,7 +75,7 @@ variable "imagedata_file" {
 variable "install_password" {
   type      = string
   default   = ""
-  sensitive = true
+  # sensitive = true
 }
 
 variable "install_user" {
