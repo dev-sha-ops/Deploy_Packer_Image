@@ -75,7 +75,7 @@ variable "imagedata_file" {
 variable "install_password" {
   type      = string
   default   = ""
-  # sensitive = true
+  sensitive = true
 }
 
 variable "install_user" {
@@ -176,6 +176,7 @@ source "azure-arm" "image" {
   winrm_insecure                         = "true"
   winrm_use_ssl                          = "true"
   winrm_username                         = "packer"
+
   dynamic "azure_tag" {
     for_each = var.azure_tags
     content {
@@ -193,7 +194,7 @@ build {
   }
 
   provisioner "file" {
-    destination = "${var.image_folder}\\""
+    destination = "${var.image_folder}\\"
     sources     = [
       "${path.root}/../assets",
       "${path.root}/../scripts",
@@ -205,4 +206,5 @@ build {
     destination = "${var.image_folder}\\scripts\\docs-gen\\"
     source      = "${path.root}/../../../helpers/software-report-base"
   }
+
 }
