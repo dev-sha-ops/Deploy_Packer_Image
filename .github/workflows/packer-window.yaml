@@ -29,7 +29,7 @@ jobs:
           cd images/windows/templates
           packer init ./windows-2022.pkr.hcl
           packer validate ./windows-2022.pkr.hcl
-          packer build ./windows-2022.pkr.hcl
+          packer build ./windows-2022.pkr.hcl -force
         env:
           # ARM_CLIENT_CERT_PATH: ${{ secrets.ARM_CLIENT_CERT_PATH }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
