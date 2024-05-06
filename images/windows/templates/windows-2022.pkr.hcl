@@ -64,7 +64,7 @@ variable "image_os" {
 
 variable "image_version" {
   type    = string
-  default = "dev"
+  default = "${env("IMAGE_VERSION")}"
 }
 
 variable "imagedata_file" {
@@ -410,18 +410,18 @@ build {
   #   ]
   # }
 
-  # provisioner "powershell" {
-  #   inline = ["if (-not (Test-Path ${var.image_folder}\\tests\\testResults.xml)) { throw '${var.image_folder}\\tests\\testResults.xml not found' }"]
-  # }
+  provisioner "powershell" {
+    inline = ["if (-not (Test-Path ${var.image_folder}\\tests\\testResults.xml)) { throw '${var.image_folder}\\tests\\testResults.xml not found' }"]
+  }
 
-  # provisioner "powershell" {
-  #   environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_FOLDER=${var.image_folder}"]
-  #   inline           = ["pwsh -File '${var.image_folder}\\SoftwareReport\\Generate-SoftwareReport.ps1'"]
-  # }
+  provisioner "powershell" {
+    environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_FOLDER=${var.image_folder}"]
+    inline           = ["pwsh -File '${var.image_folder}\\SoftwareReport\\Generate-SoftwareReport.ps1'"]
+  }
 
-  # provisioner "powershell" {
-  #   inline = ["if (-not (Test-Path C:\\software-report.md)) { throw 'C:\\software-report.md not found' }", "if (-not (Test-Path C:\\software-report.json)) { throw 'C:\\software-report.json not found' }"]
-  # }
+  provisioner "powershell" {
+    inline = ["if (-not (Test-Path C:\\software-report.md)) { throw 'C:\\software-report.md not found' }", "if (-not (Test-Path C:\\software-report.json)) { throw 'C:\\software-report.json not found' }"]
+  }
 
   # provisioner "file" {
   #   destination = "${path.root}/../Windows2022-Readme.md"
