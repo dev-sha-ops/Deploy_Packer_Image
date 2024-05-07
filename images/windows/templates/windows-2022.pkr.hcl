@@ -179,9 +179,6 @@ source "azure-arm" "image" {
   shared_image_gallery_destination {
         resource_group ="${var.managed_image_resource_group_name}"
         gallery_name = "shadabgallery"
-        target_region {
-            name = "${var.location}"
-        }
   }
   dynamic "azure_tag" {
     for_each = var.azure_tags
