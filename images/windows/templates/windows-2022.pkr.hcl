@@ -178,6 +178,8 @@ source "azure-arm" "image" {
   winrm_username                         = "packer"
   shared_image_gallery_destination {
         resource_group ="${var.managed_image_resource_group_name}"
+        image_name="packer-win22-dev-2"
+        image_version="0.0.1"
         gallery_name = "shadabgallery"
   }
   dynamic "azure_tag" {
