@@ -176,7 +176,13 @@ source "azure-arm" "image" {
   winrm_insecure                         = "true"
   winrm_use_ssl                          = "true"
   winrm_username                         = "packer"
-
+  shared_image_gallery_destination {
+        resource_group ="${var.managed_image_resource_group_name}"
+        gallery_name = "shadabgallery"
+        target_region {
+            name = "${var.location}"
+        }
+  }
   dynamic "azure_tag" {
     for_each = var.azure_tags
     content {
@@ -222,24 +228,24 @@ build {
   #   ]
   # }
 
-  provisioner "windows-shell" {
-    inline = [
-      "net user ${var.install_user} ${var.install_password} /add /passwordchg:no /passwordreq:yes /active:yes /Y",
-      "net localgroup Administrators ${var.install_user} /add",
-      "winrm set winrm/config/service/auth @{Basic=\"true\"}",
-      "winrm get winrm/config/service/auth"
-    ]
-  }
+  # provisioner "windows-shell" {
+  #   inline = [
+  #     "net user ${var.install_user} ${var.install_password} /add /passwordchg:no /passwordreq:yes /active:yes /Y",
+  #     "net localgroup Administrators ${var.install_user} /add",
+  #     "winrm set winrm/config/service/auth @{Basic=\"true\"}",
+  #     "winrm get winrm/config/service/auth"
+  #   ]
+  # }
 
-  provisioner "powershell" {
-    inline = ["if (-not ((net localgroup Administrators) -contains '${var.install_user}')) { exit 1 }"]
-  }
+  # provisioner "powershell" {
+  #   inline = ["if (-not ((net localgroup Administrators) -contains '${var.install_user}')) { exit 1 }"]
+  # }
 
-  provisioner "powershell" {
-    elevated_password = "${var.install_password}"
-    elevated_user     = "${var.install_user}"
-    inline            = ["bcdedit.exe /set TESTSIGNING ON"]
-  }
+  # provisioner "powershell" {
+  #   elevated_password = "${var.install_password}"
+  #   elevated_user     = "${var.install_user}"
+  #   inline            = ["bcdedit.exe /set TESTSIGNING ON"]
+  # }
 
   # provisioner "powershell" {
   #   environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_OS=${var.image_os}", "AGENT_TOOLSDIRECTORY=${var.agent_tools_directory}", "IMAGEDATA_FILE=${var.imagedata_file}", "IMAGE_FOLDER=${var.image_folder}"]
@@ -257,15 +263,15 @@ build {
   #   ]
   # }
 
-  provisioner "windows-restart" {
-    check_registry        = true
-    restart_check_command = "powershell -command \"& {while ( (Get-WindowsOptionalFeature -Online -FeatureName Containers -ErrorAction SilentlyContinue).State -ne 'Enabled' ) { Start-Sleep 30; Write-Output 'InProgress' }}\""
-    restart_timeout       = "10m"
-  }
+  # provisioner "windows-restart" {
+  #   check_registry        = true
+  #   restart_check_command = "powershell -command \"& {while ( (Get-WindowsOptionalFeature -Online -FeatureName Containers -ErrorAction SilentlyContinue).State -ne 'Enabled' ) { Start-Sleep 30; Write-Output 'InProgress' }}\""
+  #   restart_timeout       = "10m"
+  # }
 
-  provisioner "powershell" {
-    inline = ["Set-Service -Name wlansvc -StartupType Manual", "if ($(Get-Service -Name wlansvc).Status -eq 'Running') { Stop-Service -Name wlansvc}"]
-  }
+  # provisioner "powershell" {
+  #   inline = ["Set-Service -Name wlansvc -StartupType Manual", "if ($(Get-Service -Name wlansvc).Status -eq 'Running') { Stop-Service -Name wlansvc}"]
+  # }
 
   # provisioner "powershell" {
   #   environment_vars = ["IMAGE_FOLDER=${var.image_folder}"]
@@ -410,18 +416,18 @@ build {
   #   ]
   # }
 
-  provisioner "powershell" {
-    inline = ["if (-not (Test-Path ${var.image_folder}\\tests\\testResults.xml)) { throw '${var.image_folder}\\tests\\testResults.xml not found' }"]
-  }
+  # provisioner "powershell" {
+  #   inline = ["if (-not (Test-Path ${var.image_folder}\\tests\\testResults.xml)) { throw '${var.image_folder}\\tests\\testResults.xml not found' }"]
+  # }
 
-  provisioner "powershell" {
-    environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_FOLDER=${var.image_folder}"]
-    inline           = ["pwsh -File '${var.image_folder}\\SoftwareReport\\Generate-SoftwareReport.ps1'"]
-  }
+  # provisioner "powershell" {
+  #   environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_FOLDER=${var.image_folder}"]
+  #   inline           = ["pwsh -File '${var.image_folder}\\SoftwareReport\\Generate-SoftwareReport.ps1'"]
+  # }
 
-  provisioner "powershell" {
-    inline = ["if (-not (Test-Path C:\\software-report.md)) { throw 'C:\\software-report.md not found' }", "if (-not (Test-Path C:\\software-report.json)) { throw 'C:\\software-report.json not found' }"]
-  }
+  # provisioner "powershell" {
+  #   inline = ["if (-not (Test-Path C:\\software-report.md)) { throw 'C:\\software-report.md not found' }", "if (-not (Test-Path C:\\software-report.json)) { throw 'C:\\software-report.json not found' }"]
+  # }
 
   # provisioner "file" {
   #   destination = "${path.root}/../Windows2022-Readme.md"
